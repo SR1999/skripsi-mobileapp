@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'package:device_info/device_info.dart';
+
 
 void main() => runApp(new MyApp());
 
