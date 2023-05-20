@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 
 
 void main() => runApp(new MyApp());
@@ -23,6 +25,24 @@ class MyHomePage extends StatefulWidget{
 }
 
 class _MyHomePageState extends State<MyHomePage>{
+
+DeviceInfoPlugin deviceinfo =  DeviceInfoPlugin();
+
+AndroidDeviceInfo? androidInfo;
+Future<AndroidDeviceInfo> getInfo() async{
+  return await deviceinfo.androidInfo;
+}
+
+Widget showCard(String name, String value){
+  return Card(
+    child: ListTile(
+      title: Text(
+        "$name = $value",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    ),
+  );
+}
 
 TextEditingController user = new TextEditingController();
 TextEditingController pass = new TextEditingController();
@@ -66,6 +86,16 @@ Future<String> _login() async{
                 _login();
                 }
               ),
+              FutureBuilder(future: getInfo(),builder: (context, snapshot){
+                final data=snapshot.data!;
+                return Column(
+                  children: [
+                    showCard('brand', data.brand!),
+                    showCard('device', data.device!),
+                    showCard('id', data.id!),
+                  ],
+                );
+              },)
             ],
           ),
         ),
