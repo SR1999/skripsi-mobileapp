@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget{
   @override
   Widget build (BuildContext context){
     return new MaterialApp(
-      title: '',
+      title: 'Sistem Presensi',
       home: new MyHomePage(),
     );
   }
@@ -26,13 +26,24 @@ class MyHomePage extends StatefulWidget{
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+/*
+_launchFacebookURL() async {
+  const facebookURL = 'https://www.facebook.com/';
+  if (await canLaunch(facebookURL)) {
+    await launch(facebookURL);
+  } else {
+    throw 'Could not launch $facebookURL';
+  }
+}
+ */
+
 
 class _MyHomePageState extends State<MyHomePage>{
 
 TextEditingController user = new TextEditingController();
 TextEditingController pass = new TextEditingController();
 
-void getDeviceModel() async {
+Future<String> getDeviceModel() async {
   DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   if (Platform.isAndroid) {
@@ -44,7 +55,7 @@ void getDeviceModel() async {
     deviceID = iosInfo.identifierForVendor;
     // Store the device model in your variable or use it as needed
   }
-
+return deviceID;
 }
 
 Future<String> _login() async{
@@ -84,6 +95,7 @@ Future<String> _login() async{
               TextButton(
                 child: Text("Login"),
                 onPressed:(){
+                  getDeviceModel();
                   _login();
                 }
               ),
