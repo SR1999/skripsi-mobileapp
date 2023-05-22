@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:device_info/device_info.dart';
+import 'register.dart';
 
 String deviceID='';
 
@@ -43,7 +44,8 @@ class _MyHomePageState extends State<MyHomePage>{
 TextEditingController user = new TextEditingController();
 TextEditingController pass = new TextEditingController();
 
-Future<String> getDeviceModel() async {
+
+Future<String> _login() async{
   DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   if (Platform.isAndroid) {
@@ -55,10 +57,6 @@ Future<String> getDeviceModel() async {
     deviceID = iosInfo.identifierForVendor;
     // Store the device model in your variable or use it as needed
   }
-return deviceID;
-}
-
-Future<String> _login() async{
   final response = await http.post(Uri.parse("http://10.0.2.2/api/login.php"), body: {
     "username": user.text,
     "password": pass.text,
@@ -95,9 +93,17 @@ Future<String> _login() async{
               TextButton(
                 child: Text("Login"),
                 onPressed:(){
-                  getDeviceModel();
                   _login();
                 }
+              ),
+              Text("Belum Punya Akun?",style: TextStyle(fontSize: 12.0),),
+              TextButton(
+                  child: Text("Tekan Disini"),
+                  onPressed:(){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SecondPage()),);
+                  }
               ),
             ],
           ),
