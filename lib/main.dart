@@ -4,8 +4,12 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:device_info/device_info.dart';
 import 'register.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'dart:core';
 
 String deviceID='';
+String msg='';
 
 void main() => runApp(new MyApp());
 
@@ -33,26 +37,36 @@ TextEditingController user = new TextEditingController();
 TextEditingController pass = new TextEditingController();
 
 
-Future<String> _login() async{
+Future<void> _login() async{
   DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   if (Platform.isAndroid) {
     AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
     deviceID = androidInfo.androidId;
-    // Store the device model in your variable or use it as needed
   } else if (Platform.isIOS) {
     IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
     deviceID = iosInfo.identifierForVendor;
-    // Store the device model in your variable or use it as needed
   }
+
   final response = await http.post(Uri.parse("http://10.0.2.2/api/login.php"), body: {
     "username": user.text,
     "password": pass.text,
-    "device_id": deviceID
-
+    "device_id": deviceID,
   });
-  print(response.body);
-  return response.body;
+
+  var datauser = json.decode(response.body);
+  setState(() {
+    if (datauser.length == 0) {
+      msg = 'login gagal';
+    } else {
+      if (datauser[0]['role'] == '1') {
+        print('admin');
+      } else if (datauser[0]['role'] == '2') {
+        print('member');
+      }
+    }
+  });
+  print(datauser);
 }
 
   @override
@@ -80,10 +94,11 @@ Future<String> _login() async{
               ),
               TextButton(
                 child: Text("Login"),
-                onPressed:(){
-                  _login();
+                onPressed:() async{
+                  await _login();
                 }
               ),
+              Text(msg,style: TextStyle(fontSize: 20.0,color: Colors.red),),
               Text("Belum Punya Akun?",style: TextStyle(fontSize: 12.0),),
               TextButton(
                   child: Text("Tekan Disini"),
