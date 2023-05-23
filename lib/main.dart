@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:device_info/device_info.dart';
+import 'package:presen/AdminPage.dart';
+import 'package:presen/MemberPage.dart';
 import 'register.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
@@ -10,16 +12,23 @@ import 'dart:core';
 
 String deviceID='';
 String msg='';
+String username = '';
 
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget{
+  final Map<String, WidgetBuilder> routes = {
+    '/AdminPage': (BuildContext context) => AdminPage(username: username),
+    '/MemberPage': (BuildContext context) => MemberPage(username: username),
+    '/MyHomePage': (BuildContext context) => MyHomePage(),
+  };
 
   @override
   Widget build (BuildContext context){
     return new MaterialApp(
       title: 'Sistem Presensi',
       home: new MyHomePage(),
+      routes: routes,
     );
   }
 }
@@ -60,14 +69,19 @@ Future<void> _login() async{
       msg = 'login gagal';
     } else {
       if (datauser[0]['role'] == '1') {
-        print('admin');
+        Navigator.pushReplacementNamed(context, '/AdminPage');
       } else if (datauser[0]['role'] == '2') {
-        print('member');
+        Navigator.pushReplacementNamed(context, '/MemberPage');
       }
     }
   });
+  setState(() {
+    username = datauser[0]['username'];
+  });
   print(datauser);
+
 }
+
 
   @override
   Widget build(BuildContext context){
