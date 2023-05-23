@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -26,17 +25,6 @@ class MyHomePage extends StatefulWidget{
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
-/*
-_launchFacebookURL() async {
-  const facebookURL = 'https://www.facebook.com/';
-  if (await canLaunch(facebookURL)) {
-    await launch(facebookURL);
-  } else {
-    throw 'Could not launch $facebookURL';
-  }
-}
- */
 
 
 class _MyHomePageState extends State<MyHomePage>{
