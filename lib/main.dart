@@ -14,6 +14,7 @@ String deviceID='';
 String msg='';
 String username = '';
 
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget{
@@ -57,7 +58,7 @@ Future<void> _login() async{
     deviceID = iosInfo.identifierForVendor;
   }
 
-  final response = await http.post(Uri.parse("http://10.0.2.2/api/login.php"), body: {
+  final response = await http.post(Uri.parse("http://10.0.2.2/presensi/api/login.php"), body: {
     "username": user.text,
     "password": pass.text,
     "device_id": deviceID,
@@ -70,16 +71,17 @@ Future<void> _login() async{
     } else {
       if (datauser[0]['role'] == '1') {
         Navigator.pushReplacementNamed(context, '/AdminPage');
-      } else if (datauser[0]['role'] == '2') {
+      } if (datauser[0]['role'] == '2') {
         Navigator.pushReplacementNamed(context, '/MemberPage');
       }
     }
   });
-  setState(() {
-    username = datauser[0]['username'];
-  });
-  print(datauser);
-
+  if(datauser.isNotEmpty){
+    setState(() {
+      username = datauser[0]['username'];
+    });
+   print(datauser);
+  }
 }
 
 
